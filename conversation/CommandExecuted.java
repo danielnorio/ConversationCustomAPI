@@ -35,6 +35,10 @@ public class CommandExecuted {
 	public String getBodyContentType() { return bodyContentType;}	
 	public CommandName getCommandName() { return commandName;}
 	
+	//Helper
+	public String safeCast(JSONObject jsonObject, String string) {
+		return jsonObject.get(string) == null? null : jsonObject.get(string).toString();
+	}
 	
 	//Métodos para parsear body de retorno
 	
@@ -106,7 +110,7 @@ public class CommandExecuted {
         }
 		return examples;
 	}
-
+	
 	public ArrayList<Intent> getIntentsWithExamples()
 	{
 		return this.intentsLoaded;
@@ -115,5 +119,69 @@ public class CommandExecuted {
 
 	public void setIntentsLoaded(ArrayList<Intent> intentsLoaded) {
 		this.intentsLoaded = intentsLoaded;
+	}
+	
+	public Entity getEntity() throws ParseException
+	{
+		JSONObject entityJson = (JSONObject) (new JSONParser()).parse(body);
+		String name = entityJson.get("entity").toString();
+        String created = entityJson.get("created").toString();
+        String updated = entityJson.get("updated").toString();
+        return new Entity(name, created, updated);
+	}
+
+	public ArrayList<Entity> getEntities() throws ParseException
+	{
+		ArrayList<Entity> entities = new ArrayList<Entity>();
+		
+		JSONObject obj = (JSONObject) (new JSONParser()).parse(body);
+
+		// loop array
+        JSONArray msg = (JSONArray) obj.get("entities");
+        @SuppressWarnings("unchecked")
+		Iterator<JSONObject> iterator = msg.iterator();
+        while (iterator.hasNext()) {
+        	JSONObject intentJson = iterator.next();
+        	entities.add(new Entity(
+        	safeCast(intentJson,"entity"),
+        	safeCast(intentJson,"created"),
+        	safeCast(intentJson,"updated"),
+        	safeCast(intentJson,"type"),
+        	safeCast(intentJson,"source"),
+        	safeCast(intentJson,"open_list"),
+        	safeCast(intentJson,"description")));
+        }
+
+		return entities;	
+	}
+	
+	public ArrayList<DialogNode> getDialogNodes() throws ParseException
+	{
+		ArrayList<DialogNode> dialogNodes = new ArrayList<DialogNode>();
+		
+		JSONObject obj = (JSONObject) (new JSONParser()).parse(body);
+
+		// loop array
+        JSONArray msg = (JSONArray) obj.get("dialog_nodes");
+        @SuppressWarnings("unchecked")
+		Iterator<JSONObject> iterator = msg.iterator();
+        while (iterator.hasNext()) {
+        	JSONObject dialogJson = iterator.next();
+    		dialogNodes.add( new DialogNode (
+    			safeCast(dialogJson,"go_to"), 
+    			safeCast(dialogJson,"output"),
+    			safeCast(dialogJson,"parent"),
+    			safeCast(dialogJson,"context"),
+    			safeCast(dialogJson,"created"),
+    			safeCast(dialogJson,"updated"),
+    			safeCast(dialogJson,"metadata"),
+    			safeCast(dialogJson,"conditions"),
+    			safeCast(dialogJson,"description"),
+    			safeCast(dialogJson,"dialog_node"),
+    			safeCast(dialogJson,"previous_sibling")
+    			));
+        }
+
+		return dialogNodes;	
 	}
 }

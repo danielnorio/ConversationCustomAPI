@@ -71,8 +71,21 @@ public abstract class HttpAPI {
 			case DeleteAllIntents:
 				obj = null;
 				break;
-			default:
+			case CreateEntity:
+				obj = result().getEntity();
+				break;
+			case GetEntities:
+				obj = result().getEntities();
+				break;
+			case DeleteEntity:
 				obj = null;
+				break;
+			case DeleteAllEntities:
+				obj = null;
+				break;
+			case GetDialogNodes:
+			default:
+				obj = result().getDialogNodes();
 				break;
 		}
 		return obj;

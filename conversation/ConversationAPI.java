@@ -4,6 +4,10 @@ import java.util.ArrayList;
 
 import org.json.simple.parser.ParseException;
 
+import conversation.commands.dialog.GetDialogNodes;
+import conversation.commands.entity.CreateEntity;
+import conversation.commands.entity.DeleteEntity;
+import conversation.commands.entity.GetEntities;
 import conversation.commands.intent.CreateIntent;
 import conversation.commands.intent.CreateIntentExample;
 import conversation.commands.intent.DeleteIntent;
@@ -122,6 +126,57 @@ public class ConversationAPI extends HttpAPI {
 		}
 		saveHistory(new CommandExecuted(null, null, null, CommandName.GetIntentsWithExamples));
 		result().setIntentsLoaded(intents);
+		return this;
+	}
+	
+	// 2. Comandos de Entity
+	
+	// 2.1. CRUD para Entity
+	
+	//Create
+	public ConversationAPI createEntity(Entity entity)
+	{
+		CreateEntity cE = new CreateEntity(getClient(), CommandName.CreateEntity, conversationConnection, entity);
+		saveHistory(cE.execute(isLoggingInConsole()));
+		return this;
+	}
+	
+	//Retrieve
+	public ConversationAPI getEntities()
+	{
+		GetEntities gE = new GetEntities(getClient(), CommandName.GetEntities, conversationConnection);
+		saveHistory(gE.execute(isLoggingInConsole()));
+		return this;
+	}
+	
+	//Delete
+	public ConversationAPI deleteEntity(String entityName)
+	{
+		DeleteEntity dE = new DeleteEntity(getClient(), CommandName.DeleteIntent, conversationConnection, entityName);
+		saveHistory(dE.execute(isLoggingInConsole()));
+		return this;
+	}
+	
+	// 2.2 Comandos Compostos
+	
+	public ConversationAPI deleteAllEntities() throws ParseException
+	{
+		ArrayList<Entity> entities = getEntities().result().getEntities();
+		for (Entity i : entities) deleteEntity(i.getEntityName());
+		saveHistory(new CommandExecuted(null, null, null, CommandName.DeleteAllEntities));
+		return this;
+	}
+	
+	// 3. Comandos de Dialog
+	
+	
+	// 2.1. CRUD para Dialog Nodes
+	
+	//Retrieve
+	public ConversationAPI getDialogNodes()
+	{
+		GetDialogNodes gDN = new GetDialogNodes(getClient(), CommandName.GetDialogNodes, conversationConnection);
+		saveHistory(gDN.execute(isLoggingInConsole()));
 		return this;
 	}
 	
