@@ -15,6 +15,8 @@ import conversation.Entity;
 import conversation.EntityValue;
 import conversation.Intent;
 import conversation.IntentExample;
+import conversation.MessagingAPI;
+import conversation.ResponseMessage;
 import conversation.commands.messaging.SendPublicMessage;
 import conversation.enums.CommandName;
 import okhttp3.OkHttpClient;
@@ -47,16 +49,17 @@ public class Main {
 		//@SuppressWarnings("unused")
 		//ArrayList<ArrayList<DialogNode>> arv = d.getArvore();
 		String context = "";
+		MessagingAPI mAPI = new MessagingAPI("https://jogos-bot-br.mybluemix.net/dialog/conversation").setLogInConsole(false);
+		
 		while (true) {
 			Scanner scan = new Scanner(System.in);
 			System.out.println("Digite algo: ");
 			String input = scan.next();
-			SendPublicMessage n = new SendPublicMessage(new OkHttpClient(), CommandName.SendPublicMessage, "https://jogos-bot-br.mybluemix.net/dialog/conversation", input, context);
-			CommandExecuted ce= n.execute();
-			System.out.println("Headers: " + ce.getResponse());
-			System.out.println("Body: " + ce.getBody());
-			context = ce.getBodyContext();
 			
+			ResponseMessage postEx = (ResponseMessage) mAPI.sendMessage(input).resultObject();
+			
+			System.out.println("Resposta: " + postEx.getMessage());
+			System.out.println("Context: " + postEx.getContextString());
 		}
 	}
 

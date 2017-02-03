@@ -204,9 +204,10 @@ public class CommandExecuted {
 		return dialogNodes;	
 	}
 	
-	public String getBodyContext() throws ParseException {
-		JSONObject entityJson = (JSONObject) (new JSONParser()).parse(body);
-		String name = entityJson.get("context").toString();
-		return name;
+	public ResponseMessage getMessage() throws ParseException {
+		JSONObject Json = (JSONObject) (new JSONParser()).parse(body);
+		String contextString = Json.get("context").toString();
+		String responseMsg = Json.get("response").toString();
+		return new ResponseMessage(responseMsg, contextString);
 	}
 }

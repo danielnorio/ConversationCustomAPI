@@ -89,6 +89,9 @@ public abstract class HttpAPI {
 			case DeleteDialogNode:
 				obj = null;
 				break;
+			case SendPublicMessage:
+				obj = result().getMessage();
+				break;
 			default:
 				obj = result().getDialogNodes();
 				break;
