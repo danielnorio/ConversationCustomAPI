@@ -141,15 +141,34 @@ public class CommandExecuted {
         @SuppressWarnings("unchecked")
 		Iterator<JSONObject> iterator = msg.iterator();
         while (iterator.hasNext()) {
-        	JSONObject intentJson = iterator.next();
-        	entities.add(new Entity(
-        	safeCast(intentJson,"entity"),
-        	safeCast(intentJson,"created"),
-        	safeCast(intentJson,"updated"),
-        	safeCast(intentJson,"type"),
-        	safeCast(intentJson,"source"),
-        	safeCast(intentJson,"open_list"),
-        	safeCast(intentJson,"description")));
+        	JSONObject entityJson = iterator.next();
+        	Entity e = new Entity(
+                	safeCast(entityJson,"entity"),
+                	safeCast(entityJson,"created"),
+                	safeCast(entityJson,"updated"),
+                	safeCast(entityJson,"type"),
+                	safeCast(entityJson,"source"),
+                	safeCast(entityJson,"open_list"),
+                	safeCast(entityJson,"description"));
+        	JSONArray values = (JSONArray) entityJson.get("values");
+        	@SuppressWarnings("unchecked")
+        	Iterator<JSONObject> iteratorVal = values.iterator();
+        	while (iteratorVal.hasNext()) {
+        		JSONObject valueJson = iteratorVal.next();
+        		EntityValue ev = new EntityValue(
+        				safeCast(valueJson,"value"), 
+        				safeCast(valueJson,"created"), 
+        				safeCast(valueJson,"updated"), 
+        				safeCast(valueJson,"metadata"),
+        				true);
+        		JSONArray synonymsJson = (JSONArray) valueJson.get("synonyms");
+        		for (int i = 0; i < synonymsJson.size(); i++) {
+        			ev.addSynonym(synonymsJson.get(i).toString());
+        		}
+            	e.addValue(ev);
+        		
+        	}
+        	entities.add(e);
         }
 
 		return entities;	
@@ -183,5 +202,11 @@ public class CommandExecuted {
         }
 
 		return dialogNodes;	
+	}
+	
+	public String getBodyContext() throws ParseException {
+		JSONObject entityJson = (JSONObject) (new JSONParser()).parse(body);
+		String name = entityJson.get("context").toString();
+		return name;
 	}
 }

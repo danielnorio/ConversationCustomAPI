@@ -84,6 +84,11 @@ public abstract class HttpAPI {
 				obj = null;
 				break;
 			case GetDialogNodes:
+				obj = result().getDialogNodes();
+				break;
+			case DeleteDialogNode:
+				obj = null;
+				break;
 			default:
 				obj = result().getDialogNodes();
 				break;

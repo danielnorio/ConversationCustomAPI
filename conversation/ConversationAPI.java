@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.json.simple.parser.ParseException;
 
+import conversation.commands.dialog.DeleteDialogNode;
 import conversation.commands.dialog.GetDialogNodes;
 import conversation.commands.entity.CreateEntity;
 import conversation.commands.entity.DeleteEntity;
@@ -179,5 +180,15 @@ public class ConversationAPI extends HttpAPI {
 		saveHistory(gDN.execute(isLoggingInConsole()));
 		return this;
 	}
+	
+	//Delete
+	public ConversationAPI deleteDialogNode(String dialogNode)
+	{
+		DeleteDialogNode dE = new DeleteDialogNode(getClient(), CommandName.DeleteDialogNode, conversationConnection, dialogNode);
+		saveHistory(dE.execute(isLoggingInConsole()));
+		return this;
+	}
+	
+	
 	
 }

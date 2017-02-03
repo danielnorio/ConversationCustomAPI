@@ -14,5 +14,8 @@ public enum CommandName {
 	CreateEntity, GetEntities, DeleteEntity, DeleteAllEntities,
 	
 	//Dialog
-	GetDialogNodes;
+	GetDialogNodes, DeleteDialogNode,
+	
+	//Messaging
+	SendPublicMessage;
 }

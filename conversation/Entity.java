@@ -16,7 +16,6 @@ public class Entity {
 			String source, String open_list, String description) {
 		super();
 		this.entityName = entityName;
-		this.values = values;
 		this.created = created;
 		this.updated = updated;
 		this.type = type;
